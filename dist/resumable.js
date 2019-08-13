@@ -37,31 +37,31 @@
     $.defaults = {
       chunkSize:1*1024*1024,
       forceChunkSize:false,
-      simultaneousUploads:3,
+      simultaneousUploads:1,
       fileParameterName:'file',
-      chunkNumberParameterName: 'resumableChunkNumber',
-      chunkSizeParameterName: 'resumableChunkSize',
-      currentChunkSizeParameterName: 'resumableCurrentChunkSize',
-      totalSizeParameterName: 'resumableTotalSize',
-      typeParameterName: 'resumableType',
-      identifierParameterName: 'resumableIdentifier',
-      fileNameParameterName: 'resumableFilename',
-      relativePathParameterName: 'resumableRelativePath',
-      totalChunksParameterName: 'resumableTotalChunks',
+      chunkNumberParameterName: false,//'resumableChunkNumber',
+      chunkSizeParameterName: false, // 'resumableChunkSize',
+      currentChunkSizeParameterName: false, // 'resumableCurrentChunkSize',
+      totalSizeParameterName: false, // 'resumableTotalSize',
+      typeParameterName: false, // 'resumableType',
+      identifierParameterName: false, // 'resumableIdentifier',
+      fileNameParameterName: false, // 'resumableFilename',
+      relativePathParameterName: false, // 'resumableRelativePath',
+      totalChunksParameterName: false, // 'resumableTotalChunks',
       dragOverClass: 'dragover',
       throttleProgressCallbacks: 0.5,
       query:{},
       headers:{},
       preprocess:null,
       preprocessFile:null,
-      method:'multipart',
+      method:'octet',
       uploadMethod: 'POST',
       testMethod: 'GET',
       prioritizeFirstAndLastChunk:false,
       target:'/',
       testTarget: null,
       parameterNamespace:'',
-      testChunks:true,
+      testChunks:false,
       generateUniqueIdentifier:null,
       getTarget:null,
       maxChunkRetries:100,
@@ -116,8 +116,8 @@
       }
     };
     $.indexOf = function(array, obj) {
-    	if (array.indexOf) { return array.indexOf(obj); }     
-    	for (var i = 0; i < array.length; i++) {
+        if (array.indexOf) { return array.indexOf(obj); }
+        for (var i = 0; i < array.length; i++) {
             if (array[i] === obj) { return i; }
         }
         return -1;
@@ -875,12 +875,21 @@
         var method = $.getOpt('uploadMethod');
 
         $.xhr.open(method, target);
-        if ($.getOpt('method') === 'octet') {
+          if ($.getOpt('method') === 'octet') {
           $.xhr.setRequestHeader('Content-Type', 'application/octet-stream');
         }
         $.xhr.timeout = $.getOpt('xhrTimeout');
         $.xhr.withCredentials = $.getOpt('withCredentials');
         // Add data from header options
+
+        /*****************
+         * NGINX SUPPORT *
+         * ***************/
+
+        $.xhr.setRequestHeader("Content-Disposition", 'attachment,filename="' + $.fileObj.fileName + '"');
+        $.xhr.setRequestHeader("X-Content-Range",  "bytes " + $.startByte + "-" + ($.endByte-1) + "/" + $.fileObjSize );
+        $.xhr.setRequestHeader("X-Session-Id", $.fileObj.uniqueIdentifier  );
+
         var customHeaders = $.getOpt('headers');
         if(typeof customHeaders === 'function') {
           customHeaders = customHeaders($.fileObj, $);
