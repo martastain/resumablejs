@@ -6,7 +6,7 @@ It does not have any external dependencies other the HTML5 File API.
 This is relied on for the ability to chunk files into smaller pieces.
 
 This fork should be backwards compatible with the original version (apart from different default values),
-but also provides compatibility with [http://www.grid.net.ru/nginx/resumable_uploads.en.html](NGINX resumable upload specification).
+but also provides compatibility with [NGINX resumable upload specification](http://www.grid.net.ru/nginx/resumable_uploads.en.html).
 
 
 
@@ -31,7 +31,7 @@ r.assignDrop(document.getElementById('dropTarget'));
 
 ### NGINX configuration
 
-NGINX must be compiled with [https://github.com/fdintino/nginx-upload-module/](nginx-upload-module).
+NGINX must be compiled with [nginx-upload-module](https://github.com/fdintino/nginx-upload-module/).
 
 ```nginx
 location /upload {
