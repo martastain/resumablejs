@@ -67,7 +67,7 @@
       maxChunkRetries:100,
       chunkRetryInterval:undefined,
       permanentErrors:[400, 401, 403, 404, 409, 415, 500, 501],
-      maxFiles:undefined,
+      maxFiles:1,
       withCredentials:false,
       xhrTimeout:0,
       clearInput:true,
@@ -116,8 +116,8 @@
       }
     };
     $.indexOf = function(array, obj) {
-        if (array.indexOf) { return array.indexOf(obj); }
-        for (var i = 0; i < array.length; i++) {
+    	if (array.indexOf) { return array.indexOf(obj); }
+    	for (var i = 0; i < array.length; i++) {
             if (array[i] === obj) { return i; }
         }
         return -1;
@@ -922,6 +922,7 @@
           // Status is really 'OPENED', 'HEADERS_RECEIVED' or 'LOADING' - meaning that stuff is happening
           return('uploading');
         } else {
+          console.log("Response: " + $.xhr.status);
           if($.xhr.status == 200 || $.xhr.status == 201) {
             // HTTP 200, 201 (created)
             return('success');
@@ -1004,7 +1005,11 @@
     };
 
 
+
+
+
     // PUBLIC METHODS FOR RESUMABLE.JS
+
     $.assignBrowse = function(domNodes, isDirectory){
       if(typeof(domNodes.length)=='undefined') domNodes = [domNodes];
       $h.each(domNodes, function(domNode) {
