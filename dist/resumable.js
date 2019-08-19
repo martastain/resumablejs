@@ -922,7 +922,6 @@
           // Status is really 'OPENED', 'HEADERS_RECEIVED' or 'LOADING' - meaning that stuff is happening
           return('uploading');
         } else {
-          console.log("Response: " + $.xhr.status);
           if($.xhr.status == 200 || $.xhr.status == 201) {
             // HTTP 200, 201 (created)
             return('success');
